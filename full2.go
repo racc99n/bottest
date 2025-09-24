@@ -37,9 +37,32 @@ import (
 	"golang.org/x/text/number"
 )
 
+func getPort() string {
+	if port := os.Getenv("PORT"); port != "" {
+		return port
+	}
+	return "8080"
+}
+
+func healthHandler(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Service is healthy"))
+}
+
+func main() {
+	port := getPort()
+
+	http.HandleFunc("/", healthHandler)
+
+	log.Printf("Server starting on port %s", port)
+	if err := http.ListenAndServe(":"+port, nil); err != nil {
+		log.Fatal("Server failed to start:", err)
+	}
+}
+
 const (
-	LineChannelAccessToken = "ktbmUgNd3JrYW5mv8uL/RqYEKBCoL7IQkCQFy407454zebPQHPSMrandf+EGhv7HAJXYR3NlrtycFZMt8R0Vu5hG+bYc0ieowvK/tldMYLA1pCBY7U6oM2Veh0myF6ziSzpsQwbTbXCx+ahI23T8TAdB04t89/1O/w1cDnyilFU="
-	LineChannelSecret      = "fb1092f426235281c348081af81cd1b0"
+	LineChannelAccessToken = "rQegMZqf6ah3F6OgZvntatcYcPN9A4Sw3w6e/dY9hQRUW5QLNgqSwL4Niyg1JSwDibI7w20+PGNiCojvFeuIwLnXK96gWzz8pYHSwFSnmPs1rzpJkwb4kj/s/M9wxWoC+liDo+CVJ3Amni/JmdR/lAdB04t89/1O/w1cDnyilFU="
+	LineChannelSecret      = "ef71118c395f7509229a6c24e19fe222"
 	liffProfile            = "https://liff.line.me/2007195340-OVkVxXzG"
 	liffSummary            = "https://liff.line.me/2007195340-WeXArK3d"
 	liffGame               = "https://liff.line.me/2007195340-lDpQywXZ"
